@@ -1,47 +1,45 @@
 #!/bin/sh
-
+dn=$1
+[ -z "$dn" ] && echo "What should we name the new directory?" && read dn &&
 echo "installing laravel project" ; 
-composer create-project --prefer-dist laravel/laravel $1 && \
-cd $1 && \
+composer create-project --prefer-dist laravel/laravel $dn && 
+cd $dn && 
 clear ;
 echo "requiring tailwind presets" ;
-composer require laravel-frontend-presets/tailwindcss --dev && \
+composer require laravel-frontend-presets/tailwindcss --dev && 
 echo "scaffolding vue" ;
-php artisan ui vue && \
+php artisan ui vue && 
 echo "scaffolding tailwind" ;
-php artisan ui tailwindcss --auth && \
+php artisan ui tailwindcss --auth && 
 echo "installing npm packages" ;
-npm install && \
+npm install && 
 echo "building..." ;
-npm run dev && \
+npm run dev && 
 echo "Database Username?" ;
-read dbuser && \
+read dbuser && 
 echo "Database Password?" ;
-read dbpass && \
+read dbpass && 
 echo "Name for your new database?" ;
-read dbname && \
+read dbname && 
 echo "creating database" ;
-mysql -u $dbuser -p$dbpass -e "create database $dbname" && \
+mysql -u $dbuser -p$dbpass -e "create database $dbname" && 
 echo "updating .env file" ;
-sed -i "s/DB_DATABASE.*/DB_DATABASE=$dbname/" .env && \
-sed -i "s/DB_USERNAME.*/DB_USERNAME=$dbuser/" .env && \
-sed -i "s/DB_PASSWORD.*/DB_PASSWORD=$dbpass/" .env && \
+sed -i "s/DB_DATABASE.*/DB_DATABASE=$dbname/" .env && 
+sed -i "s/DB_USERNAME.*/DB_USERNAME=$dbuser/" .env && 
+sed -i "s/DB_PASSWORD.*/DB_PASSWORD=$dbpass/" .env && 
 echo "running migrations" ;
-php artisan migrate && \
-php artisan make:seeder UsersTableSeeder && \
-
+php artisan migrate && 
+php artisan make:seeder UsersTableSeeder && 
 echo "Creating UsersTableSeeder" ;
 echo "Display name for default user?" ;
-read user && \
+read user && 
 echo "Email Address for default user?" ;
-read email && \
+read email && 
 echo "Password for default user?" ;
-read pass && \
+read pass && 
 US="DB::table('users')->insert(['name' => '$user','email' => '$email','password' => Hash::make('$pass')]);"
-sed -i "s/\/\//$US/" database/seeds/UsersTableSeeder.php && \
+sed -i "s/\/\//$US/" database/seeds/UsersTableSeeder.php && 
 echo "Updating DatabaseSeeder" ;
-sed -i "s/\/\/\ //" database/seeds/DatabaseSeeder.php && \
-
-php artisan db:seed && \
-
+sed -i "s/\/\/\ //" database/seeds/DatabaseSeeder.php && 
+php artisan db:seed && 
 echo "Ok. You should be all set."
