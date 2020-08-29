@@ -1,17 +1,17 @@
 #!/bin/sh
 dn=$1
 [ -z "$dn" ] && echo "What should we name the new directory?" && read dn &&
-echo "installing laravel project" ; 
+echo "installing laravel project..." ; 
 composer create-project --prefer-dist laravel/laravel $dn && 
 cd $dn && 
 clear ;
-echo "requiring tailwind presets" ;
+echo "requiring tailwind presets..." ;
 composer require laravel-frontend-presets/tailwindcss --dev && 
-echo "scaffolding vue" ;
+echo "scaffolding vue..." ;
 php artisan ui vue && 
-echo "scaffolding tailwind" ;
+echo "scaffolding tailwind..." ;
 php artisan ui tailwindcss --auth && 
-echo "installing npm packages" ;
+echo "installing npm packages..." ;
 npm install && 
 echo "building..." ;
 npm run dev && 
@@ -21,16 +21,16 @@ echo "Database Password?" ;
 read dbpass && 
 echo "Name for your new database?" ;
 read dbname && 
-echo "creating database" ;
+echo "creating database..." ;
 mysql -u $dbuser -p$dbpass -e "create database $dbname" && 
-echo "updating .env file" ;
+echo "updating .env file..." ;
 sed -i "s/DB_DATABASE.*/DB_DATABASE=$dbname/" .env && 
 sed -i "s/DB_USERNAME.*/DB_USERNAME=$dbuser/" .env && 
 sed -i "s/DB_PASSWORD.*/DB_PASSWORD=$dbpass/" .env && 
-echo "running migrations" ;
+echo "running migrations..." ;
 php artisan migrate && 
-php artisan make:seeder UsersTableSeeder && 
-echo "Creating UsersTableSeeder" ;
+php artisan make:seeder UserSeeder && 
+echo "creating user seeder..." ;
 echo "Display name for default user?" ;
 read user && 
 echo "Email Address for default user?" ;
@@ -38,7 +38,7 @@ read email &&
 echo "Password for default user?" ;
 read pass && 
 US="DB::table('users')->insert(['name' => '$user','email' => '$email','password' => Hash::make('$pass')]);"
-sed -i "s/\/\//$US/" database/seeds/UsersTableSeeder.php && 
+sed -i "s/\/\//$US/" database/seeds/UserSeeder.php && 
 echo "Updating DatabaseSeeder" ;
 sed -i "s/\/\/\ //" database/seeds/DatabaseSeeder.php && 
 php artisan db:seed && 
