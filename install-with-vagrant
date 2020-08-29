@@ -1,0 +1,44 @@
+#!/bin/sh
+dn=$1
+[ -z "$dn" ] && echo "What should we name the new directory?" && read dn &&
+echo "installing laravel project..." ; 
+composer create-project --prefer-dist laravel/laravel $dn && 
+cd $dn && 
+echo "requiring homestead..." ;
+composer require laravel/homestead &&
+echo "generating Vagrantfile and Homestead.yaml..." ;
+php vendor/bin/homestead make &&
+echo "bringing up vagrant box..." ;
+vagrant up &&
+echo "requiring tailwind presets..." ;
+composer require laravel-frontend-presets/tailwindcss --dev && 
+echo "scaffolding vue..." ;
+php artisan ui vue && 
+echo "scaffolding tailwind..." ;
+php artisan ui tailwindcss --auth && 
+echo "installing npm packages..." ;
+npm install && 
+echo "building..." ;
+npm run dev &&
+echo "updating .env..." ;
+sed -i "s/DB_DATABASE.*/DB_DATABASE=homestead/" .env &&
+sed -i "s/DB_USERNAME.*/DB_USERNAME=homestead/" .env &&
+sed -i "s/DB_PASSWORD.*/DB_PASSWORD=secret/" .env &&
+echo "running migrations..." ;
+vagrant ssh -c 'cd code && php artisan migrate' &&
+echo "creating user seeder..." ;
+vagrant ssh -c 'cd code && php artisan make:seeder UserSeeder' &&
+echo "Display name for default user?" ;
+read user && 
+echo "Email Address for default user?" ;
+read email && 
+echo "Password for default user?" ;
+read pass && 
+echo "updating user seeder..." ;
+US="DB::table('users')->insert(['name' => '$user','email' => '$email','password' => Hash::make('$pass')]);"
+sed -i "s/\/\//$US/" database/seeds/UserSeeder.php && 
+echo "Updating DatabaseSeeder..." ;
+sed -i "s/\/\/\ //" database/seeds/DatabaseSeeder.php && 
+echo "seeding user table..." ;
+vagrant ssh -c 'cd code && php artisan db:seed' && 
+echo "Ok. You should be all set."
