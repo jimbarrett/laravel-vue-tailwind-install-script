@@ -38,8 +38,8 @@ read email &&
 echo "Password for default user?" ;
 read pass && 
 US="DB::table('users')->insert(['name' => '$user','email' => '$email','password' => Hash::make('$pass')]);"
-sed -i "s/\/\//$US/" database/seeds/UserSeeder.php && 
+sed -i "s/\/\//$US/" database/seeders/UserSeeder.php && 
 echo "Updating DatabaseSeeder" ;
-sed -i "s/\/\/\ //" database/seeds/DatabaseSeeder.php && 
+sed -i "s/\/\/\ //" database/seeders/DatabaseSeeder.php && 
 php artisan db:seed && 
 echo "Ok. You should be all set."
