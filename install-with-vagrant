@@ -35,10 +35,8 @@ read email &&
 echo "Password for default user?" ;
 read pass && 
 echo "updating user seeder..." ;
-US="DB::table('users')->insert(['name' => '$user','email' => '$email','password' => Hash::make('$pass')]);"
+US="\\\App\\\Models\\\\User::create(['name' => '$user', 'email' => '$email', 'password' => \\\Illuminate\\\Support\\\Facades\\\Hash::make('$pass')]);"
 sed -i "s/\/\//$US/" database/seeders/UserSeeder.php && 
-echo "Updating DatabaseSeeder..." ;
-sed -i "s/\/\/\ //" database/seeders/DatabaseSeeder.php && 
 echo "seeding user table..." ;
-vagrant ssh -c 'cd code && php artisan db:seed' && 
+vagrant ssh -c 'cd code && php artisan db:seed --class=UserSeeder' && 
 echo "Ok. You should be all set."
