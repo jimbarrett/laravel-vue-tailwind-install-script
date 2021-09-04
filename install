@@ -13,6 +13,7 @@ echo "scaffolding tailwind..." ;
 php artisan ui tailwindcss --auth &&
 echo "installing npm packages..." ;
 npm install &&
+npm install laravel-mix@latest --save-dev &&
 echo "building..." ;
 npm run dev &&
 echo "Database Username?" ;
