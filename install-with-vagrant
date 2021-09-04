@@ -8,6 +8,8 @@ echo "requiring homestead..." ;
 composer require laravel/homestead &&
 echo "generating Vagrantfile and Homestead.yaml..." ;
 php vendor/bin/homestead make &&
+echo "creating a phony private key if one does not exist..." ;
+touch ~/.ssh/id_rsa
 echo "bringing up vagrant box..." ;
 vagrant up &&
 echo "requiring tailwind presets..." ;
